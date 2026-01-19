@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-pyzmq
-websockets
-opencv-python
-numpy
-cryptography

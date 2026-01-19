@@ -1,82 +1,61 @@
-# Autism Spectrum Disabilities - Neuro-Hybrid System
+# NeuroBloom: Neuro-Hybrid Cognitive Engine
 
-This project is a neuro-hybrid system designed to assist in the diagnosis and monitoring of Autism Spectrum Disorders (ASD), ADHD, and Dyscalculia. It combines simulated EEG data generation with computer vision analysis to provide a comprehensive assessment tool.
+**A high-performance, distributed biometric monitoring system architected in C++ and Python.**
 
-## Features
+![C++](https://img.shields.io/badge/Core-C++17-blue.svg)
+![ZeroMQ](https://img.shields.io/badge/IPC-ZeroMQ-red.svg)
+![OpenSSL](https://img.shields.io/badge/Security-AES256-green.svg)
+![Build](https://img.shields.io/badge/Build-CMake-orange.svg)
 
--   **Neuro-Hybrid Generator (C++)**:
-    -   Simulates 8-band EEG data (Delta, Theta, Alpha, Beta, Gamma).
-    -   Performs real-time face and eye tracking using OpenCV.
-    -   Calculates attention metrics: Focus Ratio, Hyperactivity Index, and Blink Rate.
-    -   Encrypts data using AES-256 and transmits it via ZeroMQ.
+## Overview
+NeuroBloom is a real-time system designed to monitor cognitive states (Focus, Stress, Cognitive Load) by fusing simulated EEG data with computer vision metrics. It demonstrates a **Low-Latency Distributed Architecture** using:
 
--   **Bridge Server (Python)**:
-    -   Receives encrypted data from the C++ generator.
-    -   Decrypts and processes the data.
-    -   Calculates cognitive metrics: Theta/Beta Ratio (ADHD), Cognitive Load, and Stress Index.
-    -   Provides a WebSocket API for real-time data streaming.
-    -   Includes a Dysgraphia analysis module using handwriting heuristics.
-
--   **Frontend Dashboard (React)**:
-    -   Real-time visualization of EEG bands and attention metrics.
-    -   Live video feed overlay with tracking indicators.
-    -   Dysgraphia assessment interface.
-    -   Responsive and modern UI built with Vite and TailwindCSS.
+* **C++ Core (Producer):** Physics-based signal generation (1/f noise) and OpenCV Gaze Tracking.
+* **ZeroMQ (Transport):** Sub-millisecond IPC replacing standard HTTP REST.
+* **OpenSSL (Security):** Native AES-256-CBC encryption of biometric payloads.
+* **Python (Consumer):** Sensor fusion and WebSocket broadcasting.
 
 ## Architecture
 
-![Architecture Flow](docs/architecture_flow.png)
+```mermaid
+---
+config:
+  theme: base
+  look: handDrawn
+---
+flowchart TD
+    %% Subgraph for the C++ Core
+    subgraph CPP_Engine ["Layer 1: C++ Core Engine"]
+        direction TB
+        Input(("Webcam Input")) --> CV["Computer Vision<br/>Gaze & Face Track"]
+        PinkNoise["Pink Noise Gen<br/>1/f Physics"] --> EEG["Simulated<br/>EEG Bands"]
+        
+        CV & EEG --> Serial["JSON Serializer"]
+        Serial --> Encrypt["AES-256 Encryption<br/>(OpenSSL)"]
+        Encrypt --> ZMQ_PUB["ZeroMQ<br/>PUB Socket"]
+    end
 
-1.  **C++ Backend**: Generates data and handles computer vision. Publishes to ZeroMQ.
-2.  **Python Middleware**: Subscribes to ZeroMQ, processes logic, and hosts a WebSocket server (FastAPI).
-3.  **React Frontend**: Connects to the WebSocket server to display data and interact with the system.
+    ZMQ_PUB -- "Encrypted Stream<br/>(Latency < 5ms)" --> ZMQ_SUB
 
-## Prerequisites
+    %% Subgraph for Python Middleware
+    subgraph Python_Bridge ["Layer 2: Python Bridge"]
+        direction TB
+        ZMQ_SUB["ZeroMQ<br/>SUB Socket"] --> Decrypt["Decryption<br/>(Cryptography Lib)"]
+        Decrypt --> Fusion["Sensor Fusion"]
+        Fusion --> WSS(("WebSocket<br/>Server"))
+    end
 
--   **C++**: `g++`, `pkg-config`, `libzmq3-dev`, `libopencv-dev`, `libssl-dev`
--   **Python**: Python 3.8+
--   **Node.js**: Node.js 18+ and `npm`
+    WSS -- "JSON Events (60Hz)" --> React
 
-## Installation
-
-For detailed build and run instructions, please refer to [build.md](build.md).
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/HSKCTA/Autism-Spectrum-Disabilities.git
-    cd Autism-Spectrum-Disabilities
-    ```
-
-2.  **Install Python Dependencies:**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
-
-3.  **Install Frontend Dependencies:**
-    ```bash
-    cd frontend
-    npm install
-    cd ..
-    ```
-
-4.  **Compile C++ Generator:**
-    ```bash
-    g++ neuro_hybrid.cpp -o neuro_hybrid -lzmq `pkg-config --cflags --libs opencv4` -lssl -lcrypto
-    ```
-
-## Usage
-
-1.  **Run the System:**
-    Use the provided script to start all components:
-    ```bash
-    chmod +x run_all.sh
-    ./run_all.sh
-    ```
-
-2.  **Access the Dashboard:**
-    Open your browser and navigate to `http://localhost:5173`.
-
-## License
-[MIT](LICENSE)
+    %% Subgraph for Frontend
+    subgraph Frontend ["Layer 3: React Dashboard"]
+        React["React Client"] --> State["State Manager"]
+        State --> Viz["Chart.js Visualization"]
+    end
+    
+    classDef cpp fill:#ffcccc,stroke:#333,stroke-width:2px;
+    classDef py fill:#ffffcc,stroke:#333,stroke-width:2px;
+    classDef ui fill:#ccffff,stroke:#333,stroke-width:2px;
+    class CV,PinkNoise,EEG,Serial,Encrypt,ZMQ_PUB cpp;
+    class ZMQ_SUB,Decrypt,Fusion,WSS py;
+    class React,State,Viz ui;

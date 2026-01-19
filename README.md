@@ -25,6 +25,8 @@ This project is a neuro-hybrid system designed to assist in the diagnosis and mo
 
 ## Architecture
 
+![Architecture Flow](docs/architecture_flow.png)
+
 1.  **C++ Backend**: Generates data and handles computer vision. Publishes to ZeroMQ.
 2.  **Python Middleware**: Subscribes to ZeroMQ, processes logic, and hosts a WebSocket server (FastAPI).
 3.  **React Frontend**: Connects to the WebSocket server to display data and interact with the system.
@@ -36,6 +38,8 @@ This project is a neuro-hybrid system designed to assist in the diagnosis and mo
 -   **Node.js**: Node.js 18+ and `npm`
 
 ## Installation
+
+For detailed build and run instructions, please refer to [build.md](build.md).
 
 1.  **Clone the repository:**
     ```bash

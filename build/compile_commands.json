@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/hitesh-khare/Projects/LAtrobe/build",
-  "command": "/usr/bin/g++ -I/home/hitesh-khare/Projects/LAtrobe/core/include -isystem /usr/include/opencv4 -g -std=gnu++17 -o CMakeFiles/neuro_hybrid.dir/src/neuro_hybrid.cpp.o -c /home/hitesh-khare/Projects/LAtrobe/core/src/neuro_hybrid.cpp",
-  "file": "/home/hitesh-khare/Projects/LAtrobe/core/src/neuro_hybrid.cpp",
-  "output": "CMakeFiles/neuro_hybrid.dir/src/neuro_hybrid.cpp.o"
-}
-]

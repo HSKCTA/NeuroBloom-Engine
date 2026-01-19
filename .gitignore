@@ -1,14 +1,30 @@
-venv/
-node_modules/
-__pycache__/
-*.log
-neuro_hybrid
-.DS_Store
+# Build artifacts
+build/
+core/build/
 dist/
-.env
-.vscode/
+web/dist/
 *.o
 *.out
-frontend/dist/
-frontend/node_modules/
-DOcs/
+neuro_hybrid
+
+# Dependencies
+node_modules/
+web/node_modules/
+venv/
+bridge/venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System and IDE
+.DS_Store
+.vscode/
+.idea/
+.env

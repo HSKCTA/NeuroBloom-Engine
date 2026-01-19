@@ -17,6 +17,7 @@ NeuroBloom is a real-time system designed to monitor cognitive states (Focus, St
 
 ## Architecture
 
+```mermaid
 %%{init: {'theme': 'default', 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'arial'}}}%%
 flowchart TD
     %% Subgraph for the C++ Core
@@ -56,3 +57,4 @@ flowchart TD
     class CV,PinkNoise,EEG,Serial,Encrypt,ZMQ_PUB cpp;
     class ZMQ_SUB,Decrypt,Fusion,WSS py;
     class React,State,Viz ui;
+```
